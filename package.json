@@ -7,8 +7,12 @@
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "scripts": {
-    "dev": "npm run watch",
-    "build": "npm run build-ts",
+    "dev": "NODE_ENV=dev npm run watch",
+    "build": "npm run clean && npm run build-ts",
+    "postbuild": "npm run copy-files",
+    "clean": "rm -rf /dist",
+    "prepare": "npm run build",
+    "copy-files": "copyfiles -u 1 \"client/*.html\" \"dist/client\"",
     "build-ts": "tsc",
     "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
     "watch-ts": "tsc -w",
@@ -37,8 +41,10 @@
     "@types/node-jose": "^1.1.10",
     "@types/uuid": "^9.0.1",
     "@types/validator": "^13.7.17",
+    "@types/web-push": "^3.3.2",
     "@typescript-eslint/eslint-plugin": "^5.59.6",
     "@typescript-eslint/parser": "^5.59.6",
+    "copyfiles": "^2.4.1",
     "csv-parser": "^3.0.0",
     "eslint": "^8.40.0",
     "eslint-config-prettier": "^8.8.0",
@@ -66,6 +72,7 @@
     "node-jose": "^2.2.0",
     "pm2": "^5.3.0",
     "validator": "^13.9.0",
+    "web-push": "^3.6.1",
     "winston": "^3.8.2",
     "zlib": "^1.0.5"
   }

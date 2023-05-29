@@ -11,8 +11,8 @@
     "baseUrl": ".",
     "noErrorTruncation": true,
     "paths": {
-      "*": ["node_modules/*", "src/types/*"]
+      "*": ["node_modules/*", "src/types/*", "client/*"]
     }
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "client/*"]
 }

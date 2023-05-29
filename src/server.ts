@@ -5,11 +5,16 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express, { Request, Response } from 'express';
 import createError from 'http-errors';
-import { PORT_ENV } from './constants/env';
+import {
+  PORT_ENV,
+  PRIVATE_VAPID_KEY_ENV,
+  PUBLIC_VAPID_KEY_ENV,
+} from './constants/env';
 import healthCheckHandler from './express-routes/health-check-handler';
 import corsOptions from './middlewares/cors-options';
 import initializeLogger from './middlewares/logger';
 import notificationRouter from './routers/notification-router';
+import webpush from 'web-push';
 
 process.env.TZ = 'Asia/Calcutta';
 
@@ -17,12 +22,19 @@ const app = express();
 
 initializeLogger(app);
 
+webpush.setVapidDetails(
+  'mailto:test@test.com',
+  PUBLIC_VAPID_KEY_ENV,
+  PRIVATE_VAPID_KEY_ENV
+);
+
 app.use(express.urlencoded({ extended: false }));
 app.use(express.text({ defaultCharset: 'utf-8', type: 'text/plain' }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(compression());
 app.use(cors(corsOptions));
+app.use(express.static('client'));
 
 app.get('/favicon.ico', (req, res) => {
   res.status(204).end();
@@ -31,9 +43,7 @@ app.get('/favicon.ico', (req, res) => {
 // health check
 app.get('/health-check', healthCheckHandler);
 
-app.use('/notfication', notificationRouter);
-
-app.use(express.static('public'));
+app.use('/notification', notificationRouter);
 
 // app.use(loginCheck);
 
